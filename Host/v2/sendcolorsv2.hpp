@@ -8,7 +8,7 @@
 
 using namespace boost;
 
-std::unique_ptr<asio::serial_port>
-init_serial(asio::io_context& io_ctx, const std::string& serial_port_str);
+std::unique_ptr<asio::serial_port> init_serial(asio::io_context& io_ctx, const std::string& serial_port_str);
+void send_str(std::unique_ptr<asio::serial_port>, const std::string& data);
 
 #endif

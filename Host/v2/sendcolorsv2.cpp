@@ -21,31 +21,31 @@ int main(int argc, char** argv) {
   asio::io_context ctx;
   std::unique_ptr<asio::serial_port> port;
   std::string serial_port_str;
-  char* cmd;
+  std::string cmd;
 
   switch(argc) {
-  case 0:
+  case 1:
     return -1;
     break;
 
-  case 1:
+  case 2:
     serial_port_str = SERIAL_PORT;
+    cmd = argv[1];
     break;
 
-  case 2:
+  case 3:
     serial_port_str = argv[1];
     cmd = argv[2];
     break;
   }
 
-  int cmdlen = strlen(cmd);
-
-  std::cout << cmdlen << std::endl;
-
   // Initialize serial port
-  port = init_serial(ctx, serial_port_str);
-  if (port == nullptr)
+  try {
+    port = init_serial(ctx, serial_port_str);
+  } catch (std::exception& e) {
+    std::cout << "Unable to open serial port!" << std::endl;
     return -1;
+  }
 
   // Set options
   port->set_option(BAUD_RATE);
@@ -54,12 +54,49 @@ int main(int argc, char** argv) {
   port->set_option(PARITY);
   port->set_option(STOP_BITS);
 
+  // Write to port
+  try {
+    send_str(move(port), cmd);
+  } catch (const std::exception& e) {
+    std::cout << "An exception occurred while trying to write." << std::endl;
+    return -1;
+  }
+
   return 0;
 }
 
-std::unique_ptr<asio::serial_port>
-init_serial(asio::io_context& ctx, const std::string& serial_port_str) {
-  std::unique_ptr<asio::serial_port> port_ptr = std::make_unique<asio::serial_port>(asio::serial_port(ctx, serial_port_str));
+std::unique_ptr<asio::serial_port> init_serial(asio::io_context& ctx, const std::string& serial_port_str) {
+  std::unique_ptr<asio::serial_port> port_ptr =
+    std::make_unique<asio::serial_port>(asio::serial_port(ctx, serial_port_str));
+
+  if (!port_ptr || !port_ptr->is_open())
+    throw -1;
 
   return port_ptr;
+}
+
+void send_str(std::unique_ptr<asio::serial_port> port, const std::string& data) {
+  try {
+    if (!port || !port->is_open()) {
+      std::cout << "Port not opened!" << std::endl;
+      throw -2;
+    }
+
+    system::error_code error;
+
+    asio::write(
+                *port,
+                boost::asio::buffer(data.c_str(), data.size()),
+                asio::transfer_at_least(data.size()),
+                error
+                );
+
+    if (error) {
+      std::cout << "ASIO write failed: " << error.message() << std::endl;
+      throw -3;
+    }
+
+  } catch (const std::exception& e) {
+    throw -1;
+  }
 }
