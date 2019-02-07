@@ -1,0 +1,15 @@
+Recently I was contacted by a friend asking for assistance with driving an RGB LED strip with an Arduino, and I thought this might be a great project for myself as I have been using an RGB LED strip inside my PC case for quite some time. Unfortunately, I was using the default remote control and microcontroller provided with the strip, which didn't give me a whole lot of flexibility.
+
+Part 1: Hardware
+
+The most crucial step in this project was wiring up the Arduino with some NMOSFETs to drive the LED strip since it uses 12V logic. Here are the parts I used:
+
+	- 5M RGB LED 
+	- Arduino Nano (ATmega328P) x 1
+	- IRLB8721 N-Channel MOSFET x 3
+	- Mini-USB Type B to USB Type A Cable x 1
+	- Internal USB Header to USB Type A x 1 (Optional)
+	- Breadboard x 1
+	- Assorted Colors/Lengths of Jumper Wires x ???
+
+Wiring is pretty simple and straightforward.
