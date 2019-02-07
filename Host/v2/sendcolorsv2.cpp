@@ -2,6 +2,7 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <optional>
 
 #include "sendcolorsv2.hpp"
@@ -20,11 +21,26 @@ int main(int argc, char** argv) {
   asio::io_context ctx;
   std::unique_ptr<asio::serial_port> port;
   std::string serial_port_str;
+  char* cmd;
 
-  if (argc == 1)
+  switch(argc) {
+  case 0:
+    return -1;
+    break;
+
+  case 1:
     serial_port_str = SERIAL_PORT;
-  else
+    break;
+
+  case 2:
     serial_port_str = argv[1];
+    cmd = argv[2];
+    break;
+  }
+
+  int cmdlen = strlen(cmd);
+
+  std::cout << cmdlen << std::endl;
 
   // Initialize serial port
   port = init_serial(ctx, serial_port_str);

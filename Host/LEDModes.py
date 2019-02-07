@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import subprocess
-#import psutil
-from time import sleep
+# import psutil
+# from time import sleep
+
 
 def intersperse(iterable, delimiter):
     it = iter(iterable)
@@ -11,23 +12,32 @@ def intersperse(iterable, delimiter):
         yield delimiter
         yield x
 
+
 def sendColor(args):
     args += ['0'] * (8 - len(args))
     colorStr = "".join(list(intersperse(args, ',')))
     print(colorStr)
     subprocess.run(["sendcolors", colorStr, "/dev/ttyUSB1"])
 
+
 def hexToRGB(hexVal):
-    return list(map(lambda x: str(x).zfill(3), [int(hexVal[i: i + 2], 16) for i in (0, 2, 4)]))
+    return list(map(
+        lambda x: str(x).zfill(3),
+        [int(hexVal[i: i + 2], 16) for i in (0, 2, 4)]
+    ))
+
 
 def fade(delayVal):
     sendColor(list(map(str, [2, delayVal])))
 
+
 def singleColor(hexVal):
     sendColor(["0"] + hexToRGB(hexVal))
 
+
 def blink(delayVal, hexVal1, hexVal2):
     sendColor(["1", str(delayVal)] + hexToRGB(hexVal1) + hexToRGB(hexVal2))
+
 
 fade(5)
 '''
