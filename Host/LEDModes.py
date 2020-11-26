@@ -17,7 +17,7 @@ def sendColor(args):
     args += ['0'] * (8 - len(args))
     colorStr = "".join(list(intersperse(args, ',')))
     print(colorStr)
-    subprocess.run(["sendcolors", colorStr, "/dev/ttyUSB1"])
+    subprocess.run(["sendcolors", colorStr, "/dev/ttyUSB0"])
 
 
 def hexToRGB(hexVal):
